@@ -167,12 +167,17 @@ function initialiser() {
   return expression()
 }
 
-// expression -> [ "!" ] [ addsubconcat ] term { addsubconcat { newline } term }
+// expression -> [ "!" ] [ andor ] term1 { andor { newline } term1 }
 //             | "let" variableDeclaration
+//             | variableDeclaration
 //             | "if" expression { newline } "then" { newline } expression
 //               { newline } "else" { newline } expression
 function expression() {
   if (accept('let')) return { op: 'let', a: variableDeclaration() }
+  if (peek().type === '=' && next().type === 'identifier') {
+    return { op: 'varchange', a: variableDeclaration() }
+  }
+
   if (accept('if')) {
     let a = expression()
     while (accept('newline')) ;
@@ -193,9 +198,9 @@ function expression() {
     negated = accept('-')
 
   function r() {
-    let f = term(), op
+    let f = term1(), op
 
-    if (op = accept('+') || accept('-') || accept('..')) {
+    if (op = accept('&') || accept('|')) {
       while (accept('newline')) ;
 
       let t = {}
@@ -219,12 +224,35 @@ function expression() {
   }
 }
 
-// term -> factor { muldiv { newline } factor }
-function term() {
+// term1 -> term2 { gtlteq { newline } term2 }
+function term1() {
+  function r() {
+    let f = term2(), op
+
+    if (op = gtlteq()) {
+      while (accept('newline')) ;
+      
+      let t = {}
+
+      t.op = op
+      t.a = f
+      t.b = r()
+
+      return t
+    } else {
+      return f
+    }
+  }
+
+  return r()
+}
+
+// term2 -> factor { addsubconcat { newline } factor }
+function term2() {
   function r() {
     let f = factor(), op
 
-    if (op = accept('*') || accept('/')) {
+    if (op = accept('+') || accept('-') || accept('..')) {
       while (accept('newline')) ;
       
       let t = {}
@@ -242,14 +270,14 @@ function term() {
   return r()
 }
 
-// factor -> factor2 { { newline } andor { newline } factor2 }
+// factor -> factor2 { { newline } muldiv { newline } factor2 }
 function factor() {
   function r() {
     let f = factor2(), op
 
     let i = tokenIndex
     while (accept('newline')) ;
-    if (op = accept('&') || accept('|')) {
+    if (op = accept('*') || accept('/')) {
       while (accept('newline')) ;
       
       let t = {}
@@ -281,8 +309,11 @@ function type() {
   return expect('identifier')
 }
 
-// factor3 -> value { gtlteq { newline } value }
+// factor3 -> value # { gtlteq { newline } value }
 function factor3() {
+  return value()
+
+  /*
   function r() {
     let f = value(), op
 
@@ -302,6 +333,7 @@ function factor3() {
   }
 
   return r()
+  */
 }
 
 // gtlteq -> ==
@@ -310,14 +342,14 @@ function factor3() {
 //         | <
 //         | >=
 //         | <=
-function isGtlteq() {
+function gtlteq() {
   if (accept('=')) {
     expect('=')
     return '=='
   }
 
   if (accept('!')) {
-    expect('!')
+    expect('=')
     return '!='
   }
 

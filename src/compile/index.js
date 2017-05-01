@@ -12,11 +12,17 @@ module.exports = function compile(stmts) {
   return program
 }
 
-function compileExpression({ op, a, b }) {
+function compileExpression({ op, a, b, c }) {
   if (op === 'let') {
     const [ ident, expr ] = a
 
     return `var ${mkIdentifier(ident.value)} = ${compileExpression(expr)}`
+  }
+
+  if (op === 'varchange') {
+    const [ ident, expr ] = a
+
+    return `${mkIdentifier(ident.value)} = ${compileExpression(expr)}`
   }
 
   if (op === 'literal') {
@@ -46,6 +52,43 @@ function compileExpression({ op, a, b }) {
       : mkIdentifier(ident.value)
 
     return `${fun}(${args.map(compileExpression).join(',')})`
+  }
+
+  if (op === '..' || op === '+') {
+    return `(${compileExpression(a)} + ${compileExpression(b)})`
+  }
+
+  if (op === '-') {
+    return `(${compileExpression(a)} - ${compileExpression(b)})`
+  }
+
+  if (op === '/') {
+    return `(${compileExpression(a)} / ${compileExpression(b)})`
+  }
+
+  if (op === '*') {
+    return `(${compileExpression(a)} * ${compileExpression(b)})`
+  }
+
+  if (op === '!') {
+    return `$not(${compileExpression(a)})`
+  }
+
+  if (op === '&') {
+    return `(${compileExpression(a)} && ${compileExpression(b)})`
+  }
+
+  if (op === '|') {
+    return `(${compileExpression(a)} || ${compileExpression(b)})`
+  }
+
+  if (op === '==') {
+    return `(${compileExpression(a)} == ${compileExpression(b)})`
+  }
+
+  if (op === 'if') {
+    const [ condition, thenExpr, elseExpr ] = [ a, b, c ]
+    return `if (${compileExpression(a)}) ${compileExpression(b)} else ${compileExpression(c)}`
   }
 
   throw 'unknown operator ' + op

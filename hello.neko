@@ -1,0 +1,1 @@
+var hello = if ((((1 + 1) == 2) && true)) "ok" else "wat";$print((hello + "\n"));

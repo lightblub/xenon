@@ -1,2 +1,6 @@
-let hello = "Hello"
-print(hello)
+let hello =
+  if 1 + 1 == 2 & true
+  then "ok"
+  else "wat"
+
+print(hello .. "\n")

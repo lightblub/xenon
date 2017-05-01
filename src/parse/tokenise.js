@@ -148,6 +148,14 @@ module.exports = function tokenise(source) {
         })
         continue
       }
+
+      if (char === '!') {
+        tokens.push({
+          type: '!',
+          line, col,
+        })
+        continue
+      }
     }
 
     buf += char
