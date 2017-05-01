@@ -1,10 +1,3 @@
-/* Grammar:
-
-expression    -> term { operator term }
-term          -> identifier | "(" expression ")" | "-" term | number
-operator      -> "+" | "-" | "*" | "/" | "^"
-*/
-
 /* Utility methods */
 
 let tokens = []
