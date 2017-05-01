@@ -86,8 +86,6 @@ function program() {
 function statement() {
   if (accept('proof')) {
     return [ 'proof', functionDeclaration() ]
-  } else if (accept('let')) {
-    return [ 'let', variableDeclaration() ]
   } else if (accept('import')) {
     let what = expect('identifier')
     return accept('as')
@@ -337,7 +335,7 @@ function isGtlteq() {
 
 // value -> identifier
 //        | string
-//        | number
+//        | int
 //        | "(" { newline } expression { newline } ")"
 //        | identifier "(" { newline } valueList { newline } ")"
 function value() {
@@ -351,11 +349,11 @@ function value() {
       while (accept('newline')) ;
       expect(')')
       return { op: 'funcall', a: n, b: args }
-    } else return n
+    } else return { op: 'literal', a: n }
   }
 
-  if (n = accept('number') || accept('string')) {
-    return n
+  if (n = accept('int') || accept('string')) {
+    return { op: 'literal', a: n }
   }
 
   if (accept('(')) {
@@ -366,7 +364,7 @@ function value() {
     return e
   }
 
-  error(`Unexpected token ${consume().type}, expected number, string, identifier, (`)
+  error(`Unexpected token ${consume().type}, expected int, string, identifier, (`)
 }
 
 module.exports = function(tokens) {

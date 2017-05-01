@@ -39,7 +39,7 @@ module.exports = function tokenise(source) {
         } else {
           // end of number literal
           tokens.push({
-            type: 'number',
+            type: 'int',
             value: buf,
             line, col,
           })
