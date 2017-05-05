@@ -1,6 +1,6 @@
 const validIdentifierCharacters = `abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_.`.split('')
-const ops = '= ! & | > < : .. ,'.split(' ')
-const keywords = [ 'if', 'then', 'else', 'let', 'is', 'proof', 'import', 'as' ].concat(ops)
+const ops = '= ! & | > < : , ~ ^'.split(' ')
+const keywords = [ 'if', 'then', 'else', 'let', 'is', 'proof', 'import', 'use', 'as' ].concat(ops)
 
 module.exports = function tokenise(source) {
   let tokens = []

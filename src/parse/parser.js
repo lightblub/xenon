@@ -83,6 +83,7 @@ function program() {
 //            | { newline }
 //            | "proof" functionDeclaration
 //            | "import" identifier [ "as" identifier ]
+//            | "use" identifier [ "as" identifier ]
 function statement() {
   if (accept('proof')) {
     return [ 'proof', functionDeclaration() ]
@@ -91,6 +92,11 @@ function statement() {
     return accept('as')
       ? [ 'import', what, expect('identifier') ]
       : [ 'import', what ]
+  } else if (accept('use')) {
+    let what = expect('identifier')
+    return accept('as')
+      ? [ 'use', what, expect('identifier') ]
+      : [ 'use', what ]
   } else if (accept('newline') || accept('EOF')) {
     while (accept('newline')) ;
     return null
@@ -99,10 +105,14 @@ function statement() {
   }
 }
 
-// variableDeclaration -> identifier initialiser
+// variableDeclaration -> identifier [ ":" type ] initialiser
 function variableDeclaration() {
   let ident = expect('identifier')
-  return [ ident, initialiser() ]
+  let t = accept(':')
+    ? type()
+    : undefined
+
+  return [ ident, initialiser(), t ]
 }
 
 // functionDeclaration -> identifier "(" { newline } argumentList { newline } ")" initialiser
@@ -192,6 +202,7 @@ function expression() {
   }
 
   let notted = accept('!')
+  // TODO bit not (~)
 
   let negated = false
   if (!accept('+'))
@@ -200,7 +211,7 @@ function expression() {
   function r() {
     let f = term1(), op
 
-    if (op = accept('&') || accept('|')) {
+    if (op = accept('&') || accept('|') || accept('^')) {
       while (accept('newline')) ;
 
       let t = {}
@@ -247,12 +258,12 @@ function term1() {
   return r()
 }
 
-// term2 -> factor { addsubconcat { newline } factor }
+// term2 -> factor { addsub { newline } factor }
 function term2() {
   function r() {
     let f = factor(), op
 
-    if (op = accept('+') || accept('-') || accept('..')) {
+    if (op = accept('+') || accept('-') || accept('>>>')) {
       while (accept('newline')) ;
       
       let t = {}
@@ -277,7 +288,7 @@ function factor() {
 
     let i = tokenIndex
     while (accept('newline')) ;
-    if (op = accept('*') || accept('/')) {
+    if (op = accept('*') || accept('/') || accept('>>') || accept('<<')) {
       while (accept('newline')) ;
       
       let t = {}

@@ -6,11 +6,13 @@ const exec = require('child_process').exec
 let source = fs.readFileSync('hello.xe', 'utf8')
 let ast = parse(source)
 
-console.log(require('util').inspect(ast, { depth: null, colors: true }))
+const inspect = obj => {
+  console.log(require('util').inspect(obj, { depth: null, colors: true }))
+  return obj
+}
 
-let neko = compile(ast)
-fs.writeFileSync('hello.neko', neko, 'utf8')
-exec('nekoc hello.neko', (err, stdout, stderr) => {
-  /*if (!stderr) fs.unlinkSync('hello.neko')
-  else throw stderr*/
-})
+inspect(ast)
+
+compile(ast)
+  .then(console.log)
+  .catch(console.error)
