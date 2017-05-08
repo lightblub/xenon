@@ -2,6 +2,6 @@
 
 * [Intro](intro.md)
 * The Language
-  - [Values](spec/values.md)
-  - [Variables](spec/variables.md)
+  - [Values](lang/values.md)
+  - [Variables](lang/variables.md)
 
