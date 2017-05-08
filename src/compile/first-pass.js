@@ -1,30 +1,42 @@
 const {
-  is, defFromId, resultingTypeOf, typeOfLiteral,
+  is, defFromId, resultingTypeOf, typeOfLiteral, unifyTypes, understandType,
 } = require('../type/util')
 
 module.exports = async function firstPass(tree) {
   let newTree = []
+  let ctx = {} // TODO
 
   for (let stmt of tree) {
-    if (stmt[0] === 'expr') {
-      let expr = await enterExpression(stmt[1])
-      newTree.push([ 'expr', expr ])
-    } else {
-      newTree.push(stmt)
+    let [ type, ...rest ] = stmt
+
+    switch (type) {
+      case 'proof': {
+        throw new Error('todo')
+      }
+
+      case 'union': {
+        throw new Error('todo')
+      }
+
+      case 'expr': {
+        await enterExpression(rest[0], ctx)
+      }
     }
+
+    newTree.push(stmt)
   }
 
   return newTree
 }
 
-async function enterExpression({ op, a, b, c, line, col, resultingType }) {
+async function enterExpression({ op, a, b, c, line, col, resultingType }, ctx) {
   switch (op) {
-    case 'let': { 
+    case 'let': {
       const [ ident, expr, type ] = a
-      const value = await enterExpression(expr)
+      const value = await enterExpression(expr, ctx)
 
       if (type)
-        var expectedType = defFromId('std.' + type.value) // TODO
+        var expectedType = understandType(type)
 
       let resultingType = value.resultingType
 
@@ -44,7 +56,7 @@ async function enterExpression({ op, a, b, c, line, col, resultingType }) {
     }
 
     case 'u-': {
-      let expr = await enterExpression(a)
+      let expr = await enterExpression(a, ctx)
       let exprType = expr.resultingType
 
       if (!is(exprType, defFromId('std.Num'))) {
@@ -63,10 +75,29 @@ async function enterExpression({ op, a, b, c, line, col, resultingType }) {
       }
     }
 
+    case 'if': {
+      let condition = await enterExpression(a, ctx)
+
+      if (!is(condition.resultingType, defFromId('std.Bool'))) {
+        throw new TypeError(
+          `If expression on line ${condition.line} is expecting the condition`
+        + ` to be Bool, but it is ${condition.resultingType.name}`)
+      }
+
+      let resT = await enterExpression(b, ctx)
+      let resF = await enterExpression(c, ctx)
+      let resType = unifyTypes(resT.resultingType, resF.resultingType)
+
+      return {
+        op, a, b, c, line: condition.line, col: condition.col,
+        resultingType: resType,
+      }
+    }
+
     default: {
-      let exprA = await enterExpression(a)
+      let exprA = await enterExpression(a, ctx)
       let exprTypeA = exprA.resultingType
-      let exprB = await enterExpression(b)
+      let exprB = await enterExpression(b, ctx)
       let exprTypeB = exprB.resultingType
 
       if (!is(exprTypeA, exprTypeB)) {

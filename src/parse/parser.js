@@ -82,11 +82,19 @@ function program() {
 // statement -> expression
 //            | { newline }
 //            | "proof" functionDeclaration
+//            | "union" identifier { nl } "=" { nl } type
 //            | "import" identifier [ "as" identifier ]
 //            | "use" identifier [ "as" identifier ]
 function statement() {
   if (accept('proof')) {
     return [ 'proof', functionDeclaration() ]
+  } else if (accept('union')) {
+    let i = expect('identifier')
+    while (accept('newline')) ;
+    expect('=')
+    while (accept('newline')) ;
+    let t = type()
+    return [ 'union', i, t ]
   } else if (accept('import')) {
     let what = expect('identifier')
     return accept('as')
@@ -315,9 +323,18 @@ function factor2() {
     : val
 }
 
-// type -> identifier # TODO generics
+// type -> identifier
+//       | identifier "|" type
 function type() {
-  return expect('identifier')
+  if (peek().type === '|') {
+    // identifier "|" type
+    let r = [ 'union', expect('identifier') ]
+    expect('|')
+    r.push(type())
+    return r
+  } else {
+    return expect('identifier')
+  }
 }
 
 // factor3 -> value # { gtlteq { newline } value }
@@ -379,6 +396,7 @@ function gtlteq() {
 // value -> identifier
 //        | string
 //        | int
+//        | cast expression
 //        | "(" { newline } expression { newline } ")"
 //        | identifier "(" { newline } valueList { newline } ")"
 function value() {
@@ -397,6 +415,11 @@ function value() {
 
   if (n = accept('int') || accept('string')) {
     return { op: 'literal', a: n }
+  }
+
+  if (accept('cast')) {
+    let e = expression()
+    return [ 'cast', e ]
   }
 
   if (accept('(')) {

@@ -1,6 +1,13 @@
-const validIdentifierCharacters = `abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_.`.split('')
-const ops = '= ! & | > < : , ~ ^'.split(' ')
-const keywords = [ 'if', 'then', 'else', 'let', 'is', 'proof', 'import', 'use', 'as' ].concat(ops)
+const validIdentifierCharacters = 
+  `abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_.`.split('')
+const ops = '+ - * / = ! & | > < : , ~ ^ %'.split(' ')
+const keywords = [
+  'if', 'then', 'else',
+  'let', 'is', 'cast',
+  'import', 'use', 'as',
+  'fun', 'return',
+  'proof', 'union',
+].concat(ops)
 
 module.exports = function tokenise(source) {
   let tokens = []
@@ -117,41 +124,9 @@ module.exports = function tokenise(source) {
         continue
       }
 
-      if (char === '+') {
+      if (ops.includes(char)) {
         tokens.push({
-          type: '+',
-          line, col,
-        })
-        continue
-      }
-
-      if (char === '-') {
-        tokens.push({
-          type: '-',
-          line, col,
-        })
-        continue
-      }
-
-      if (char === '*') {
-        tokens.push({
-          type: '*',
-          line, col,
-        })
-        continue
-      }
-
-      if (char === '/') {
-        tokens.push({
-          type: '/',
-          line, col,
-        })
-        continue
-      }
-
-      if (char === '!') {
-        tokens.push({
-          type: '!',
+          type: char,
           line, col,
         })
         continue

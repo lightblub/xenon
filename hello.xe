@@ -1,1 +1,3 @@
-let foo: Int = 20 / 5
+let arr = []
+arr[0] = "yexd"
+print(arr[0])

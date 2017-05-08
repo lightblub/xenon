@@ -73,9 +73,9 @@ const Float = {
 
 const Num = {
   name: 'Num',
-  id: 'std.Num',
+  id: 'std.Int|std.Float',
   type: UNION,
-  of: [ 'std.Int', 'std.Float' ],
+  of: [ Int, Float ],
 }
 
 const Str = {
