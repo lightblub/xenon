@@ -11,6 +11,6 @@ module.exports = function compile(program) {
 
   return Promise.resolve(program)
     .then(firstPass) // does type checking and inference
-    .then(inspect)
+    //.then(inspect)
     .then(toNeko)
 }

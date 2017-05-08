@@ -1,5 +1,7 @@
 {
+  "name": "xe",
   "dependencies": {
     "mz": "^2.6.0"
-  }
+  },
+  "bin": "bin/xe.js"
 }
