@@ -1,6 +1,6 @@
 # Values
 
-A value in Xenon is some form of the following basic datatypes:
+A value in Xenon must be some kind of the following basic datatypes:
 
 * **Int**: integers can be represented in either decimal form \(such as `12345` or `-14`\) or hexadecimal \(`0xFFF`\)
 * **Float**: floating-point numbers are represented similarly, i.e `12.34`
@@ -15,6 +15,5 @@ Note:
 * Integers have 31 bits for performance reasons.
 * Floating-point values are 64-bit double-precision.
 * Strings are sequences of bytes. The length of a string is determined by the number of bytes in it.
-
-
+* Xenon has no concept of **null**.
 
