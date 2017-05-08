@@ -1,3 +1,11 @@
-let arr = []
-arr[0] = "yexd"
-print(arr[0])
+fun makeMoreExciting(str) =
+  str + "!!!"
+
+let helloworld = "hello world"
+print(makeMoreExciting(helloworld))
+
+fun addThree(a, b, c) =
+  a + b + c
+
+let addOne = addThree(0, 1)
+print(addOne(2))

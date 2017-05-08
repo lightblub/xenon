@@ -83,6 +83,7 @@ function program() {
 //            | { newline }
 //            | "proof" functionDeclaration
 //            | "union" identifier { nl } "=" { nl } type
+//            | "fun" functionDeclaration
 //            | "import" identifier [ "as" identifier ]
 //            | "use" identifier [ "as" identifier ]
 function statement() {
@@ -105,6 +106,8 @@ function statement() {
     return accept('as')
       ? [ 'use', what, expect('identifier') ]
       : [ 'use', what ]
+  } else if (accept('fun')) {
+    return [ 'fun', functionDeclaration() ]
   } else if (accept('newline') || accept('EOF')) {
     while (accept('newline')) ;
     return null

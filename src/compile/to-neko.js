@@ -7,6 +7,17 @@ module.exports = async function toNeko(ast) {
     const [ type, ...rest ] = stmt
 
     switch (type) {
+      case 'fun': {
+        const [ ident, args, body ] = rest[0]
+
+        out += `var ${identifierToNeko(ident.value)} = function(`
+        out += args.map(a => identifierToNeko(a.ident.value)).join(', ')
+        out += `) {\n`
+        out += `  return ${expressionToNeko(body)};\n`
+        out += `}\n`
+        break
+      }
+
       case 'expr': {
         out += expressionToNeko(rest[0])
         out += `;\n`
@@ -53,6 +64,12 @@ function expressionToNeko({ op, a, b, c }) {
       return literalToNeko(a)
     }
 
+    case 'funcall': {
+      const [ ident, args ] = [ a, b ]
+      let argstr = args.map(expressionToNeko).join(', ')
+      return `$apply(${identifierToNeko(ident.value)}, ${argstr})` // currying
+    }
+
     default: {
       throw new TypeError(`Unknown expression operator: ${op}`)
     }
@@ -60,6 +77,8 @@ function expressionToNeko({ op, a, b, c }) {
 }
 
 function identifierToNeko(ident) {
+  if (ident === 'print') return '$print' // XXX
+
   let regex = /(^[^a-zA-Z_])|([^a-zA-Z_0-9])/g
 
   return ident.replace(regex, badChar =>
@@ -74,6 +93,10 @@ function literalToNeko({ type, value }) {
 
     case 'string': {
       return `"${value.replace(/"/g, '\\"')}"`
+    }
+
+    case 'identifier': {
+      return identifierToNeko(value)
     }
 
     default: {

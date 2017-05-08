@@ -94,6 +94,11 @@ async function enterExpression({ op, a, b, c, line, col, resultingType }, ctx) {
       }
     }
 
+    case 'funcall': {
+      // TODO
+      return { op, a }
+    }
+
     default: {
       let exprA = await enterExpression(a, ctx)
       let exprTypeA = exprA.resultingType
