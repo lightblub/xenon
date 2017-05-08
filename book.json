@@ -1,0 +1,6 @@
+{
+  "root": "doc/",
+  "structure": {
+    "readme": "readme.md"
+  }
+}
