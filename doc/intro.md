@@ -1,7 +1,6 @@
-# The Xenon Programming Language
+# Intro
 
-Xenon is an open source, statically typed functional programming language with
-a strong emphasis on defining _specific_ types for absolutely everything.
+Xenon is an open source, statically typed functional programming language with a strong emphasis on defining _specific_ types for absolutely everything. It may also be referred to as Xe.
 
 ```xe
 type Age(n: Int) {
@@ -19,3 +18,4 @@ print("So you're $years old.")
 ```
 
 Xe is currently a work-in-progress.
+
