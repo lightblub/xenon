@@ -12,8 +12,8 @@ A value in Xenon must be some kind of the following basic datatypes:
 
 Note:
 
-* Integers have 31 bits for performance reasons.
+* Integers have 31 bits for performance reasons. (Will likely be changed in the future to full 32-bit integers!)
 * Floating-point values are 64-bit double-precision.
-* Strings are sequences of bytes. The length of a string is determined by the number of bytes in it.
+* Strings are sequences of bytes. The length of a string is determined by the number of bytes in it. (Will likely be rewritten to support UTF8!)
 * Xenon has no concept of **null**.
 
