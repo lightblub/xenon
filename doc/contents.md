@@ -5,4 +5,5 @@
 * The Language
   - [Values](lang/values.md)
   - [Variables](lang/variables.md)
+  - [Functions](lang/functions.md)
 
