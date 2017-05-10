@@ -33,3 +33,9 @@ let divide1: Fun = divide(1)
 divide1(2)
 divide(1, 2)
 ```
+
+## Pure functions
+
+A pure function in Xenon is a function that doesn't rely on any networking, input/output, or filesystem-based apis. i.e. a function that calls `print()` is not pure.
+
+Some Xenon language features require you to write pure functions, such as [proofs](proofs.md).
