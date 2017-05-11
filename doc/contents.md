@@ -7,4 +7,5 @@
   - [Variables](lang/variables.md)
   - [Functions](lang/functions.md)
   - [Proofs](lang/proofs.md)
+  - [Unions](lang/unions.md)
 

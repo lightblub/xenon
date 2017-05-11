@@ -10,19 +10,20 @@ let foo: Str = "Hello"
 
 Here we are declaring a variable called `foo` of the type `Str`, and assigning the value `"Hello"` to it.
 
-You don't have to give a variable a value when it is defined - you can assign one later if you prefer. The compiler will complain if you attempt to read a value from a variable without a value.
+You **must** give a variable an initial value when you define it.
 
-Every variable has a type, but you don't have to specify it when you declare it if you provide an initial value. Your computer is clever, and it will infer the type of the variable from that value.
+```xe
+let z: Int # error, must give z an initial value
+z = 25
+```
 
-Therefore, the following definitions of `x`, `y` and `z` are all effectively identical:
+Every variable has a type, but you don't have to specify it when you declare it. The compiler will attempt to infer the type of the variable based on the initial value, but it's always best to specify the type if you know what it should be anyway.
+
+Therefore, the following definitions of `x` and `y` are all effectively identical:
 
 ```xe
 let x: Int = 4
-
 let y = 4
-
-let z: Int
-z = 4
 ```
 
 All variables start with a lowercase letter, and you may not change the type of a variable.
